@@ -539,7 +539,19 @@ if page == "Dashboard":
         "Select match to inspect draft",
         filtered_matches["match_id"].tolist(),
     )
+if st.button("Delete this match", type="secondary"):
+    # Delete match row
+    matches_df = load_matches()
+    matches_df = matches_df[matches_df["match_id"] != selected_match_id]
+    matches_df.to_csv(MATCHES_FILE, index=False)
 
+    # Delete draft actions
+    draft_df = load_draft_actions()
+    draft_df = draft_df[draft_df["match_id"] != selected_match_id]
+    draft_df.to_csv(DRAFT_ACTIONS_FILE, index=False)
+
+    st.success("Match deleted successfully.")
+    st.rerun()
     selected_actions = filtered_draft_df[filtered_draft_df["match_id"] == selected_match_id].copy()
 
     if not selected_actions.empty:
